@@ -45,7 +45,12 @@ public class Parser {
         if (nextInstruction != null) {
             hasMoreLines = true;
 
+            currentInstruction = currentInstruction.trim();
+
             if (!nextInstruction.contains("//") && !nextInstruction.isBlank() && !nextInstruction.isEmpty()) {
+                currentInstruction = nextInstruction;
+            }
+            if (currentInstruction.startsWith("")) {
                 currentInstruction = nextInstruction;
             }
         }
@@ -56,11 +61,12 @@ public class Parser {
     }
 
     public InstructionType instructionType() {
-        if (currentInstruction.startsWith("@")) {
+        if (currentInstruction.contains("@")) {
             instructionType = InstructionType.A_INSTRUCTION;
-        } else if (currentInstruction.startsWith("(")) {
+        } else if (currentInstruction.contains("(")) {
             instructionType = InstructionType.L_INSTRUCTION;
-        } else if (!currentInstruction.contains("//") && !currentInstruction.isBlank()) {
+        } else if (currentInstruction.contains("D") || currentInstruction.contains("M") ||
+                    currentInstruction.contains("A")) {
             instructionType = InstructionType.C_INSTRUCTION;
         } else {
             instructionType = null;
@@ -73,11 +79,12 @@ public class Parser {
         String symbol = "";
 
         if (instructionType == InstructionType.A_INSTRUCTION) {
-            symbol = currentInstruction.substring(1);
+            symbol = currentInstruction.trim().substring(1);
         } else if (instructionType == InstructionType.L_INSTRUCTION) {
-            symbol = currentInstruction;
+            symbol = currentInstruction.trim();
             symbol = symbol.substring(symbol.indexOf("(") + 1);
             symbol = symbol.substring(0, symbol.lastIndexOf(")"));
+            symbol = symbol.trim();
         }
 
         return symbol;
@@ -88,7 +95,7 @@ public class Parser {
 
         if (instructionType == InstructionType.C_INSTRUCTION) {
             if (currentInstruction.contains("=")) {
-                dest = currentInstruction.substring(0, 1);
+                dest = currentInstruction.trim().substring(0, 1);
             } else {
                 dest = null;
             }
@@ -101,10 +108,10 @@ public class Parser {
 
         if (instructionType == InstructionType.C_INSTRUCTION) {
             if (currentInstruction.contains("=")) {
-                comp = currentInstruction;
+                comp = currentInstruction.trim();
                 comp = comp.substring(comp.indexOf("=") + 1);
             } else if (currentInstruction.contains(";")) {
-                comp = currentInstruction;
+                comp = currentInstruction.trim();
                 comp = comp.split(";")[0].trim();
             }
         }
@@ -116,7 +123,7 @@ public class Parser {
 
         if (instructionType == InstructionType.C_INSTRUCTION) {
             if (currentInstruction.contains(";")) {
-                jump = currentInstruction;
+                jump = currentInstruction.trim();
                 jump = currentInstruction.substring(jump.indexOf(";") + 1);
             } else {
                 jump = null;

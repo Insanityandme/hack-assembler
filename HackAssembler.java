@@ -26,10 +26,10 @@ public class HackAssembler {
 
             if (instructionType == InstructionType.C_INSTRUCTION || instructionType == InstructionType.A_INSTRUCTION) {
                 lineNumber += 1;
+                // System.out.println(lineNumber);
             } else if (instructionType == InstructionType.L_INSTRUCTION) {
                 String symbol = parser.symbol();
-
-                symbolTable.addEntry(symbol, lineNumber + 1);
+                symbolTable.addEntry(symbol, lineNumber);
             }
         }
     }
@@ -73,19 +73,22 @@ public class HackAssembler {
                     symbolNumber = symbolTable.getAddress(symbol);
                     String bInstructionA = decToBinary(symbolNumber);
                     printWriter.println(bInstructionA);
-                }
-                /*
-                else if (!symbolTable.contains(symbol)) {
-                    symbolTable.addEntry(symbol, nextAvailableAddress);
-                    System.out.println(symbol);
-                    nextAvailableAddress++;
+                } else if (!symbolTable.contains(symbol)) {
+                    // lösa så att @0 fungerar
+                    System.out.println(symbol.split(""));
+                    if (symbol.split("@")[1].startsWith("0")) {
+                        int number = Integer.parseInt(symbol.split("@")[1]);
+                        String bInstructionA = decToBinary(number);
+                        printWriter.println(bInstructionA);
+                    } else {
+                        symbolTable.addEntry(symbol, nextAvailableAddress);
+                        nextAvailableAddress++;
 
-                    symbolNumber = symbolTable.getAddress(symbol);
-                    String bInstructionA = decToBinary(symbolNumber);
-                    printWriter.println(bInstructionA);
-                 }
-                 */
-                else {
+                        symbolNumber = symbolTable.getAddress(symbol);
+                        String bInstructionA = decToBinary(symbolNumber);
+                        printWriter.println(bInstructionA);
+                    }
+                } else {
                     symbolNumber = Integer.parseInt(parser.symbol());
                     String bInstructionA = decToBinary(symbolNumber);
                     printWriter.println(bInstructionA);
