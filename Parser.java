@@ -45,13 +45,14 @@ public class Parser {
         if (nextInstruction != null) {
             hasMoreLines = true;
 
-            currentInstruction = currentInstruction.trim();
+            // Remove whitespaces
+            String cI = nextInstruction.trim();
 
-            if (!nextInstruction.contains("//") && !nextInstruction.isBlank() && !nextInstruction.isEmpty()) {
-                currentInstruction = nextInstruction;
-            }
-            if (currentInstruction.startsWith("")) {
-                currentInstruction = nextInstruction;
+            if (cI.startsWith("@") || cI.startsWith("M") || cI.startsWith("D")
+                    || cI.startsWith("A") || cI.startsWith("(") || cI.startsWith("0")
+                    || cI.startsWith("1")) {
+                // Makes sure we do not parse any inline comments
+                currentInstruction = cI.split(" ")[0];
             }
         }
 
@@ -66,7 +67,7 @@ public class Parser {
         } else if (currentInstruction.contains("(")) {
             instructionType = InstructionType.L_INSTRUCTION;
         } else if (currentInstruction.contains("D") || currentInstruction.contains("M") ||
-                    currentInstruction.contains("A")) {
+                currentInstruction.contains("A")) {
             instructionType = InstructionType.C_INSTRUCTION;
         } else {
             instructionType = null;
@@ -79,12 +80,12 @@ public class Parser {
         String symbol = "";
 
         if (instructionType == InstructionType.A_INSTRUCTION) {
-            symbol = currentInstruction.trim().substring(1);
+            symbol = currentInstruction.substring(1);
         } else if (instructionType == InstructionType.L_INSTRUCTION) {
-            symbol = currentInstruction.trim();
+            symbol = currentInstruction;
             symbol = symbol.substring(symbol.indexOf("(") + 1);
             symbol = symbol.substring(0, symbol.lastIndexOf(")"));
-            symbol = symbol.trim();
+            // System.out.println("l : " + symbol);
         }
 
         return symbol;
@@ -95,7 +96,10 @@ public class Parser {
 
         if (instructionType == InstructionType.C_INSTRUCTION) {
             if (currentInstruction.contains("=")) {
-                dest = currentInstruction.trim().substring(0, 1);
+                // dest = currentInstruction.substring(0, 1);
+                dest = currentInstruction;
+                dest = dest.split("=")[0].split(" ")[0];
+                // System.out.println("c: dest: " + dest);
             } else {
                 dest = null;
             }
@@ -108,11 +112,15 @@ public class Parser {
 
         if (instructionType == InstructionType.C_INSTRUCTION) {
             if (currentInstruction.contains("=")) {
-                comp = currentInstruction.trim();
-                comp = comp.substring(comp.indexOf("=") + 1);
+                comp = currentInstruction;
+                comp = comp.split("=")[1].split(" ")[0];
+
+                // System.out.println("c: comp: " + comp);
             } else if (currentInstruction.contains(";")) {
-                comp = currentInstruction.trim();
-                comp = comp.split(";")[0].trim();
+                comp = currentInstruction;
+                comp = comp.split(";")[0];
+
+                // System.out.println("c: comp: " + comp);
             }
         }
         return comp;
@@ -123,8 +131,9 @@ public class Parser {
 
         if (instructionType == InstructionType.C_INSTRUCTION) {
             if (currentInstruction.contains(";")) {
-                jump = currentInstruction.trim();
-                jump = currentInstruction.substring(jump.indexOf(";") + 1);
+                jump = currentInstruction;
+                jump = jump.split(";")[1].split(" ")[0];
+                // System.out.println("c: jump: " + jump);
             } else {
                 jump = null;
             }

@@ -7,11 +7,11 @@ public class Code {
             switch (dest) {
                 case "M" -> bDest = "001";
                 case "D" -> bDest = "010";
-                case "DM" -> bDest = "011";
+                case "DM", "MD" -> bDest = "011";
                 case "A" -> bDest = "100";
                 case "AM" -> bDest = "101";
                 case "AD" -> bDest = "110";
-                case "ADM" -> bDest = "111";
+                case "ADM", "AMD" -> bDest = "111";
             }
         } else {
             bDest = "000";
