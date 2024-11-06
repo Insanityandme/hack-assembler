@@ -10,3 +10,7 @@
 * generating binary code
 
 And many other techniques that I think is useful for daily coding life. 
+
+## Running Pong on a CPU emulator
+![image](https://github.com/user-attachments/assets/f3577858-7689-4b71-9de1-81724a066847)
+
